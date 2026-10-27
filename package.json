@@ -1,0 +1,10 @@
+{
+  "name": "cyberpunk-tcg-catalog",
+  "private": true,
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check": "node scripts/build.mjs --check",
+    "test": "node --test tests/*.test.cjs"
+  },
+  "engines": {"node": ">=20"}
+}

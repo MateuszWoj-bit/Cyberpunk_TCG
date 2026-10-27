@@ -1,0 +1,70 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>Catalog browser tests</title>
+<body><pre id="report">RUNNING</pre><iframe id="app" width="1400" height="1000" src="../gallery.html"></iframe>
+<script>
+const report = document.getElementById('report');
+const frame = document.getElementById('app');
+const logs = [];
+const check = (condition, message) => { if (!condition) throw new Error(message); logs.push('PASS: ' + message); };
+let stage = -1;
+frame.addEventListener('load', async () => {
+  try {
+    const w = frame.contentWindow, d = w.document;
+    const $ = id => d.getElementById(id);
+    const count = () => d.querySelectorAll('#results article').length;
+    const change = (id,value) => { $(id).value = value; $(id).dispatchEvent(new w.Event(id === 'query' ? 'input' : 'change', {bubbles:true})); };
+    const view = name => d.querySelector(`[data-view="${name}"]`).click();
+    if (stage === -1) { w.localStorage.removeItem('cyberpunk-tcg-wanted-v1'); stage=0; w.location.reload(); return; }
+    const waitForStatus = () => new Promise(resolve => { const observer = new w.MutationObserver(() => { observer.disconnect(); resolve(); }); observer.observe($('action-status'), {childList:true,subtree:true,characterData:true}); });
+    if (stage === 1) {
+      view('wanted'); check(count() === 1, 'Wishlist survives reload');
+      d.querySelector('#results [data-wish]').click(); check(count() === 0, 'Removal updates wishlist view');
+      view('market'); check(count() === 8, 'Collectible view remains independent');
+      change('rarity','Iconic Secret'); check(count() === 4, 'Market rarity filters exact editions');
+      d.querySelector('#results [data-detail]').click();
+      check($('details').open && $('detail-body').textContent.includes('β'), 'Market details identify Beta printing');
+      $('close-dialog').click();
+      view('all'); change('legal','not-legal'); check(count() === 1, 'Legality filter shows Rebecca');
+      check($('results').textContent.includes('Brak tekstu zasad'), 'Missing card data is explained');
+      view('wanted');
+      const input = $('import-file');
+      const id = w.CATALOG_DATA.cards[0].id;
+      const transfer = new w.DataTransfer();
+      transfer.items.add(new w.File([JSON.stringify({version:1,kind:'cyberpunk-tcg-wanted',cardIds:[id,id,'unknown']})], 'wishlist.json', {type:'application/json'}));
+      input.files = transfer.files; const imported = waitForStatus(); input.dispatchEvent(new w.Event('change', {bubbles:true}));
+      await imported;
+      check(count() === 1 && $('action-status').textContent.includes('1 nieznanych'), 'File import deduplicates and reports unknown IDs');
+      const bad = new w.DataTransfer(); bad.items.add(new w.File(['bad json'],'bad.json',{type:'application/json'})); input.files=bad.files; const rejected = waitForStatus(); input.dispatchEvent(new w.Event('change',{bubbles:true}));
+      await rejected;
+      check(count() === 1 && $('action-status').textContent.includes('Nie udało'), 'Invalid file import preserves wishlist (' + count() + ', ' + $('action-status').textContent + ')');
+      frame.width = '390';
+      view('limited');
+      await new Promise(resolve => setTimeout(resolve,100));
+      check(d.documentElement.scrollWidth <= 390, 'No horizontal page overflow at mobile width');
+      w.localStorage.removeItem('cyberpunk-tcg-wanted-v1');
+      report.textContent = logs.join('\n') + '\nALL BROWSER TESTS PASSED';
+      document.title = 'PASS';
+      return;
+    }
+    w.localStorage.removeItem('cyberpunk-tcg-wanted-v1');
+    check(count() === 151, 'Initial offline catalog renders 151 cards');
+    const firstImage = d.querySelector('#results img');
+    if (!firstImage.complete) await new Promise((resolve,reject) => { firstImage.onload=resolve; firstImage.onerror=reject; });
+    check(firstImage.naturalWidth > 0, 'Local card image loads offline');
+    view('limited'); check(count() === 31, 'Limited view shows recommendations only');
+    change('grade','S'); check(count() === 3, 'S grade includes conditional Towerfall');
+    check($('results').textContent.includes('S warunkowe'), 'Conditional rating remains visible');
+    view('all'); change('query','judy alvarez nothing'); check(count() === 1, 'Accent-insensitive search');
+    change('query','nonexistent-card-xyz'); check(count() === 0 && !$('empty').hidden, 'Empty results are explained');
+    $('reset').click(); check(count() === 151, 'Reset restores full catalog');
+    change('query','towerfall');
+    d.querySelector('#results [data-detail]').click();
+    check($('details').open && $('detail-title').textContent === 'Towerfall', 'Details modal opens');
+    check($('detail-body').textContent.includes('S warunkowe'), 'Details show assessment');
+    $('close-dialog').click(); check(!$('details').open, 'Details modal closes');
+    d.querySelector('#results [data-wish]').click();
+    view('wanted'); check(count() === 1, 'Wishlist view shows selected card');
+    check(JSON.parse(w.localStorage.getItem('cyberpunk-tcg-wanted-v1')).cardIds.length === 1, 'Wishlist persists to localStorage');
+    stage = 1; w.location.reload();
+  } catch (error) { report.textContent = logs.join('\n') + '\nFAIL: ' + error.stack; document.title='FAIL'; }
+});
+</script></body></html>

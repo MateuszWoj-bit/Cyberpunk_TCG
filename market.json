@@ -1,0 +1,18 @@
+{
+  "checked": "2026-10-27",
+  "description": "Wybrane wydania wyróżnione w zewnętrznych zestawieniach wartości. To sygnał zainteresowania kolekcjonerskiego, nie pomiar liczby kupujących. Nie przenoś oceny wydania Beta Iconic na zwykłą wersję Retail. Zestawienie zapisane lokalnie; nie aktualizuje się automatycznie.",
+  "sources": [
+    {"id":"holohoard","title":"HoloHoard — zestawienie szacowanych wartości","url":"https://holohoard.app/guides/most-expensive-cyberpunk-tcg-cards","snapshot":"2026-10-24"},
+    {"id":"luma","title":"Luma TCG — zestawienie wartości Cardmarket","url":"https://lumatcg.com/en/tcg/cyberpunk","snapshot":"2026-10-17"}
+  ],
+  "cards": {
+    "johnny-silverhand-rocking-renegade": {"rarity":"Iconic Secret","set":"welcometonightcitybeta","number":"β168","sources":["holohoard","luma"]},
+    "sasha-yakovleva-won-t-let-you-down": {"rarity":"Iconic Secret","set":"welcometonightcitybeta","number":"β169","sources":["holohoard","luma"]},
+    "judy-a-lvarez-nothing-to-doubt": {"rarity":"Iconic Secret","set":"welcometonightcitybeta","number":"β171","sources":["holohoard","luma"]},
+    "panam-palmer-strength-through-family": {"rarity":"Iconic Secret","set":"welcometonightcitybeta","number":"β170","sources":["holohoard"]},
+    "judy-a-lvarez-braindance-maestro": {"rarity":"Iconic Legend","set":"welcometonightcitybeta","number":"β157","sources":["holohoard"]},
+    "alt-cunningham-soulkiller-architect": {"rarity":"Iconic Legend","set":"welcometonightcitybeta","number":"β155","sources":["holohoard"]},
+    "hanako-arasaka-daughter-of-the-emperor": {"rarity":"Iconic Legend","set":"welcometonightcitybeta","number":"β151","sources":["holohoard"]},
+    "rebecca-having-a-moment": {"rarity":"Nova Rare","set":"PRM01","number":"005","sources":["holohoard"]}
+  }
+}
