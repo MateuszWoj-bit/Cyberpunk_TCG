@@ -1,7 +1,7 @@
 CYBERPUNK TCG — NIGHT CITY CARD INDEX
 
 URUCHOMIENIE
-Otwórz gallery.html w aktualnym Chrome, Edge lub Firefox. Zachowaj obok
+Otwórz index.html (albo gallery.html) w aktualnym Chrome, Edge lub Firefox. Zachowaj obok
 pliki gallery.css, gallery.js, catalog-core.js, catalog-data.js i folder images.
 Przeglądanie i osobista lista działają bez serwera oraz bez połączenia z siecią.
 Linki do źródeł i grafik innych wydań wymagają internetu.
@@ -49,7 +49,7 @@ Po zmianie źródeł uruchom (Node.js 20+, bez instalowania zależności):
   node --test tests/catalog.test.cjs
 Równoważne polecenia: npm run build, npm run check, npm test.
 
-Generator tworzy gallery.html, catalog-data.js oraz cards.csv (UTF-8 BOM).
+Generator tworzy index.html, gallery.html, catalog-data.js oraz cards.csv (UTF-8 BOM).
 CSV zawiera ID, slug, pełną nazwę, legalność i oceny limited.
 Nie edytuj wygenerowanych plików bezpośrednio. Generator sprawdza liczbę
 kart, unikalność identyfikatorów, grafiki i odwołania ocen do kart/wydań.

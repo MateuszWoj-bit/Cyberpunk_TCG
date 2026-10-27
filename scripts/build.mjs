@@ -27,6 +27,9 @@ for (const [slug, entry] of Object.entries(market.cards)) {
   const card = database.cards.find(card => card.slug === slug);
   const printing = card?.printings.find(p => p.rarity === entry.rarity && p.set.code === entry.set && p.collector_number === entry.number);
   if (!printing) fail(`Nie znaleziono wydania kolekcjonerskiego: ${slug}`);
+  if (entry.local_image) {
+    if (!/^images\/[a-z0-9-]+\.webp$/.test(entry.local_image) || !fs.existsSync(path.join(root, entry.local_image))) fail(`Brak lokalnej grafiki kolekcjonerskiej: ${slug}`);
+  }
   if (entry.sources.some(id => !market.sources.some(source => source.id === id))) fail(`Nieznane źródło: ${slug}`);
   entry.printing_id = printing.id;
 }
@@ -46,7 +49,7 @@ const csv = '\ufeff' + fields.join(',') + '\r\n' + database.cards.map(card => {
   const row = { ...card, limited_grade: rating?.grade ? rating.grade + (rating.conditional ? ' warunkowe' : '') : '', limited_category: rating?.category, limited_note: rating?.note };
   return fields.map(key => cell(row[key])).join(',');
 }).join('\r\n') + '\r\n';
-for (const [name, content] of [['gallery.html', read('gallery.template.html')], ['catalog-data.js', data], ['cards.csv', csv]]) {
+for (const [name, content] of [['gallery.html', read('gallery.template.html')], ['index.html', read('gallery.template.html')], ['catalog-data.js', data], ['cards.csv', csv]]) {
   if (process.argv.includes('--check')) {
     if (read(name) !== content) fail(`Nieaktualny plik ${name}. Uruchom npm run build.`);
   } else fs.writeFileSync(path.join(root, name), content, 'utf8');

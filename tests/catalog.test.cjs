@@ -36,11 +36,17 @@ test('combined filters handle null costs, legality and sale eligibility', () => 
 test('market is separate from limited and wishlist; rarity describes the relevant edition', () => {
   assert.equal(core.select(cards, { view:'market' }).length, 8);
   assert.equal(core.select(cards, { view:'market', rarity:'Iconic Secret' }).length, 4);
-  assert.equal(core.select(cards, { view:'all', rarity:'Iconic Secret' }).length, 0);
+  assert.equal(core.select(cards, { view:'all', rarity:'Iconic Secret' }).length, 4);
+  assert.ok(core.select(cards, { view:'all', rarity:'Iconic Legend' }).length > 0);
   assert.equal(core.select(cards, { view:'wanted' }).length, 0);
   const wanted = new Set([card('towerfall').id]);
   assert.deepEqual(core.select(cards, { view:'wanted' }, wanted).map(c => c.slug), ['towerfall']);
   assert.equal(core.select(cards, { view:'market' }, wanted).length, 8);
+});
+test('collector entries have a concrete remote image variant', () => {
+  const collector = core.select(cards, { view:'market' });
+  assert.equal(collector.length, 8);
+  assert.ok(collector.every(card => card.printings.some(printing => printing.rarity === card.market.rarity && printing.collector_number === card.market.number && /^https:\/\//.test(printing.source_image_url))));
 });
 test('wishlist import round trips, deduplicates and reports unknown IDs', () => {
   const id = card('towerfall').id;

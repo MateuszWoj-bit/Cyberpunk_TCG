@@ -22,10 +22,19 @@
       if (filters.view === 'wanted' && !wanted.has(card.id)) return false;
       if (filters.view === 'market' && !card.market) return false;
       if (terms.some(term => !card.search.includes(term))) return false;
-      for (const [field, key] of [['color','color'], ['type','card_type'], ['rarity','rarity']]) {
-        // Rarity describes the featured collectible edition in the market view.
-        const value = field === 'rarity' && filters.view === 'market' ? card.market?.rarity : card[key];
-        if (filters[field] && filters[field] !== value) return false;
+      for (const [field, key] of [['color','color'], ['type','card_type']]) {
+        if (filters[field] && filters[field] !== card[key]) return false;
+      }
+      if (filters.rarity) {
+        // The main catalog represents a card identity, while Iconic/Nova variants
+        // live on its printings. The collector view remains exact to its featured
+        // printing; the main view intentionally finds any matching printing.
+        if (filters.view === 'market') {
+          if (filters.rarity !== card.market?.rarity) return false;
+        } else {
+          const rarities = new Set([card.rarity, ...(card.printings || []).map(printing => printing.rarity)]);
+          if (!rarities.has(filters.rarity)) return false;
+        }
       }
       if (filters.classification && !(card.classifications || []).includes(filters.classification)) return false;
       if (filters.cost && (card.cost == null || (filters.cost === '7+' ? card.cost < 7 : card.cost !== Number(filters.cost)))) return false;

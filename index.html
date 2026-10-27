@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Katalog Cyberpunk TCG: karty, oceny sealed, wydania kolekcjonerskie i osobista lista poszukiwanych.">
+  <title>Cyberpunk TCG — Night City Card Index</title>
+  <link rel="stylesheet" href="gallery.css">
+  <script defer src="catalog-data.js"></script>
+  <script defer src="catalog-core.js"></script>
+  <script defer src="gallery.js"></script>
+</head>
+<body>
+  <a class="skip" href="#results">Przejdź do kart</a>
+  <header class="masthead">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">NC<span> / </span></span><div>CYBERPUNK <b>TCG</b><small>NIGHT CITY CARD INDEX</small></div></div>
+    <span class="connection"><span aria-hidden="true">●</span> KATALOG OFFLINE <span id="snapshot"></span></span>
+  </header>
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div><p class="eyebrow">BAZA KART / 01</p><h1 id="hero-title">Poznaj karty.<br><span>Zbuduj przewagę.</span></h1><p class="intro">Przeglądaj Night City, wybieraj mocne karty do sealed i zapisuj te, których szukasz do swojej kolekcji.</p></div>
+      <div class="overview" aria-label="Podsumowanie bazy"><div><strong id="total-count">151</strong><span>TOŻSAMOŚCI KART</span></div><div><strong id="limited-count">—</strong><span>POLECANYCH W SEALED</span></div><div><strong id="printing-count">—</strong><span>WPISÓW WYDAŃ</span></div></div>
+    </section>
+    <nav class="views" aria-label="Widok katalogu">
+      <button type="button" data-view="all" aria-pressed="true">Wszystkie <span id="all-badge">151</span></button>
+      <button type="button" data-view="limited" aria-pressed="false">Limited <span id="limited-badge">—</span></button>
+      <button type="button" data-view="market" aria-pressed="false">Kolekcjonerskie <span id="market-badge">—</span></button>
+      <button type="button" data-view="wanted" aria-pressed="false">Moje poszukiwane <span id="wanted-badge">0</span></button>
+    </nav>
+    <section class="view-info" aria-labelledby="view-title"><p class="eyebrow" id="view-kicker">EKSPLORUJ BAZĘ</p><h2 id="view-title">Wszystkie karty</h2><p id="view-description"></p><div id="view-extra"></div></section>
+    <section class="filters" aria-label="Filtrowanie kart">
+      <div class="search-row"><label class="search-label">Szukaj w nazwach, zdolnościach i klasyfikacjach<input id="query" type="search" placeholder="Np. Hanako, Blocker, draw…" autocomplete="off"></label><label>Sortowanie<select id="sort"><option value="name">Nazwa A–Z</option><option value="limited">Ocena limited</option><option value="cost">Koszt rosnąco</option><option value="power">Siła malejąco</option></select></label></div>
+      <div class="filter-grid">
+        <label>Kolor<select id="color"><option value="">Wszystkie kolory</option><option value="Red">Red / czerwony</option><option value="Yellow">Yellow / żółty</option><option value="Green">Green / zielony</option><option value="Blue">Blue / niebieski</option></select></label>
+        <label>Typ<select id="type"><option value="">Wszystkie typy</option><option>Legend</option><option>Unit</option><option>Gear</option><option>Program</option></select></label>
+        <label>Koszt<select id="cost"><option value="">Każdy koszt</option><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7+</option></select></label>
+        <label>Ocena / rola limited<select id="grade"><option value="">Wszystkie oceny</option><option value="recommended">Polecane w sealed</option><option value="S">S (także warunkowe)</option><option value="A+">A+</option><option value="A">A</option><option value="A−">A−</option><option value="B+">B+</option><option value="legend">Polecane Legendy</option><option value="curve">Wypełnienie krzywej</option><option value="situational">Zależne od puli</option><option value="caution">Uważaj na warunki</option><option value="unrated">Bez oceny</option></select></label>
+        <label>Rzadkość<select id="rarity"><option value="">Wszystkie rzadkości</option></select></label>
+      </div>
+      <details class="advanced"><summary>Więcej filtrów</summary><div class="filter-grid"><label>Klasyfikacja<select id="classification"><option value="">Wszystkie klasyfikacje</option></select></label><label>Legalność Standard<select id="legal"><option value="">Wszystkie statusy</option><option value="legal">Legalne w zapisanej bazie</option><option value="not-legal">Niedozwolone w zapisanej bazie</option></select></label><label class="check-label"><input id="eddiable" type="checkbox"> Tylko sprzedawalne (Eddies)</label></div><p class="muted">Rzadkość dotyczy prezentowanego wydania; w widoku Kolekcjonerskie — wskazanego wariantu. Legalność Standard nie oznacza dostępności w boosterze ani w puli sealed.</p></details>
+    </section>
+    <div class="result-bar"><p id="result-count" role="status" aria-live="polite"></p><button id="reset" type="button" class="text-button">Wyczyść filtry ↺</button></div>
+    <p id="storage-warning" class="notice" role="status" hidden></p>
+    <p id="action-status" class="action-status" role="status" aria-live="polite"></p>
+    <section id="results" class="card-grid" aria-label="Wyniki wyszukiwania" tabindex="-1"></section>
+    <section id="empty" class="empty" hidden><h2>Brak kart w tym widoku</h2><p id="empty-text"></p><button id="empty-reset" type="button">Wyczyść filtry</button></section>
+    <noscript><p class="notice">Włącz JavaScript, aby korzystać z galerii. Dane są też dostępne w <a href="cards.csv">pliku CSV</a>.</p></noscript>
+  </main>
+  <footer><div><strong>CYBERPUNK TCG / CARD INDEX</strong><p>Nieoficjalny katalog. Grafiki i znaki należą do ich właścicieli. Aktualne zasady i erraty mają pierwszeństwo.</p></div><div class="footer-links"><a href="cards.csv" download>Pobierz CSV ↗</a><a href="cards.json" download>Dane JSON ↗</a><a href="README.txt">Instrukcja ↗</a></div></footer>
+  <dialog id="details" aria-labelledby="detail-title"><div class="dialog-toolbar"><span>SZCZEGÓŁY KARTY</span><button id="close-dialog" type="button" aria-label="Zamknij szczegóły">Zamknij ×</button></div><div id="detail-body"></div></dialog>
+  <input id="import-file" type="file" accept="application/json,.json" hidden>
+</body>
+</html>

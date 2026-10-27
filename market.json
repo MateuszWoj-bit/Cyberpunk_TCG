@@ -6,13 +6,13 @@
     {"id":"luma","title":"Luma TCG — zestawienie wartości Cardmarket","url":"https://lumatcg.com/en/tcg/cyberpunk","snapshot":"2026-10-17"}
   ],
   "cards": {
-    "johnny-silverhand-rocking-renegade": {"rarity":"Iconic Secret","set":"welcometonightcitybeta","number":"β168","sources":["holohoard","luma"]},
-    "sasha-yakovleva-won-t-let-you-down": {"rarity":"Iconic Secret","set":"welcometonightcitybeta","number":"β169","sources":["holohoard","luma"]},
-    "judy-a-lvarez-nothing-to-doubt": {"rarity":"Iconic Secret","set":"welcometonightcitybeta","number":"β171","sources":["holohoard","luma"]},
-    "panam-palmer-strength-through-family": {"rarity":"Iconic Secret","set":"welcometonightcitybeta","number":"β170","sources":["holohoard"]},
-    "judy-a-lvarez-braindance-maestro": {"rarity":"Iconic Legend","set":"welcometonightcitybeta","number":"β157","sources":["holohoard"]},
-    "alt-cunningham-soulkiller-architect": {"rarity":"Iconic Legend","set":"welcometonightcitybeta","number":"β155","sources":["holohoard"]},
-    "hanako-arasaka-daughter-of-the-emperor": {"rarity":"Iconic Legend","set":"welcometonightcitybeta","number":"β151","sources":["holohoard"]},
-    "rebecca-having-a-moment": {"rarity":"Nova Rare","set":"PRM01","number":"005","sources":["holohoard"]}
+    "johnny-silverhand-rocking-renegade": {"rarity":"Iconic Secret","set":"welcometonightcitybeta","number":"β168","local_image":"images/collector-johnny-silverhand-rocking-renegade.webp","sources":["holohoard","luma"]},
+    "sasha-yakovleva-won-t-let-you-down": {"rarity":"Iconic Secret","set":"welcometonightcitybeta","number":"β169","local_image":"images/collector-sasha-yakovleva-won-t-let-you-down.webp","sources":["holohoard","luma"]},
+    "judy-a-lvarez-nothing-to-doubt": {"rarity":"Iconic Secret","set":"welcometonightcitybeta","number":"β171","local_image":"images/collector-judy-a-lvarez-nothing-to-doubt.webp","sources":["holohoard","luma"]},
+    "panam-palmer-strength-through-family": {"rarity":"Iconic Secret","set":"welcometonightcitybeta","number":"β170","local_image":"images/collector-panam-palmer-strength-through-family.webp","sources":["holohoard"]},
+    "judy-a-lvarez-braindance-maestro": {"rarity":"Iconic Legend","set":"welcometonightcitybeta","number":"β157","local_image":"images/collector-judy-a-lvarez-braindance-maestro.webp","sources":["holohoard"]},
+    "alt-cunningham-soulkiller-architect": {"rarity":"Iconic Legend","set":"welcometonightcitybeta","number":"β155","local_image":"images/collector-alt-cunningham-soulkiller-architect.webp","sources":["holohoard"]},
+    "hanako-arasaka-daughter-of-the-emperor": {"rarity":"Iconic Legend","set":"welcometonightcitybeta","number":"β151","local_image":"images/collector-hanako-arasaka-daughter-of-the-emperor.webp","sources":["holohoard"]},
+    "rebecca-having-a-moment": {"rarity":"Nova Rare","set":"PRM01","number":"005","local_image":"images/collector-rebecca-having-a-moment.webp","sources":["holohoard"]}
   }
 }

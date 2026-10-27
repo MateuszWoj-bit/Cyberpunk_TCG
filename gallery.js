@@ -60,8 +60,11 @@
   }
   function cardHTML(card, index) {
     const printing = view === 'market' ? marketPrinting(card) : null;
+    const collectorImage = card.market?.local_image;
+    const imageSource = collectorImage || printing?.source_image_url || card.local_image;
+    const imageIsRemote = Boolean(printing?.source_image_url && !collectorImage);
     return `<article class="card" data-color="${escape(card.color)}" data-card="${escape(card.slug)}">
-      <div class="card-art"><button type="button" class="art-button" data-detail="${escape(card.id)}" aria-label="Szczegóły: ${escape(card.display_name)}"><img loading="${index < 8 ? 'eager' : 'lazy'}" decoding="${index < 8 ? 'sync' : 'async'}" width="500" height="700" src="${escape(card.local_image)}" alt="${escape(card.display_name)}"></button><span class="art-caption">${printing && printing.id !== card.selected_printing_id ? 'Podgląd wersji podstawowej · wariant w szczegółach' : ' '}</span></div>
+      <div class="card-art"><button type="button" class="art-button" data-detail="${escape(card.id)}" aria-label="Szczegóły: ${escape(card.display_name)}"><img loading="${index < 8 ? 'eager' : 'lazy'}" decoding="${index < 8 ? 'sync' : 'async'}" width="500" height="700" src="${escape(imageSource)}" onerror="this.onerror=null;this.src='${escape(card.local_image)}'" alt="${escape(card.display_name)}${printing ? ` — ${escape(printing.rarity)} ${escape(printing.collector_number)}` : ''}"></button><span class="art-caption">${printing ? `Wariant ${escape(printing.rarity)} · ${escape(printing.collector_number)}${collectorImage ? ' · lokalnie' : ' · fallback lokalny w razie blokady'}` : ' '}</span></div>
       <div class="card-content"><div class="card-meta">${escape(card.color)} / ${escape(card.card_type)} / ${escape(printing?.rarity || card.rarity)}</div><h3>${escape(card.name)}</h3><p class="subtitle">${escape(card.subname || ' ')}</p>${stats(card)}${badges(card)}
       ${card.assessment && view !== 'market' ? `<p class="card-note">${escape(card.assessment.note)}</p>` : ''}
       ${printing ? '<p class="card-note">Wyróżnione wydanie w zestawieniu wartości. Źródła i dokładny wariant w szczegółach.</p>' : ''}
@@ -116,7 +119,8 @@
     const featured = marketPrinting(card);
     const synergies = data.limited.synergies.filter(pair => pair.cards.includes(card.slug));
     const legal = card.legalities?.standard === 'legal' ? 'Legalna' : card.legalities?.standard === 'not-legal' ? 'Niedozwolona' : 'Brak informacji';
-    $('detail-body').innerHTML = `<div class="detail-layout"><div class="detail-art"><img width="500" height="700" src="${escape(card.local_image)}" alt="${escape(card.display_name)}"><small>Grafika: ${escape(card.set?.name)} · ${escape(card.print_number)}</small>${wishButton(card)}</div><div class="detail-copy">
+    const detailImage = card.market?.local_image || featured?.source_image_url || card.local_image;
+    $('detail-body').innerHTML = `<div class="detail-layout"><div class="detail-art"><img width="500" height="700" src="${escape(detailImage)}" onerror="this.onerror=null;this.src='${escape(card.local_image)}'" alt="${escape(card.display_name)}${featured ? ` — ${escape(featured.rarity)} ${escape(featured.collector_number)}` : ''}"><small>${featured ? `Grafika wybranego wariantu: ${escape(featured.set.name)} · ${escape(featured.collector_number)} (z lokalnym fallbackiem)` : `Grafika: ${escape(card.set?.name)} · ${escape(card.print_number)}`}</small>${wishButton(card)}</div><div class="detail-copy">
       <p class="eyebrow">${escape(card.color)} / ${escape(card.card_type)}</p><h2 id="detail-title">${escape(card.display_name)}</h2><p class="muted">${escape((card.classifications || []).join(' · ') || 'Brak klasyfikacji')} · ${card.is_eddiable ? 'Sprzedawalna (Eddies)' : 'Niesprzedawalna (Eddies)'}</p>${stats(card)}${badges(card)}
       <h3>Zdolności</h3><p class="rules" lang="en">${escape(card.official_rules_text_en || card.rules_text || 'Brak tekstu zasad w zapisanej bazie.')}</p>
       <p class="source-note">Standard: ${legal} · stan danych ${escape(data.retrieved)}. To nie jest potwierdzenie dostępności w sealed.</p>
@@ -187,7 +191,7 @@
   function options(id, values) {
     for (const value of [...new Set(values)].sort((a,b) => a.localeCompare(b,'pl'))) $(id).add(new Option(value,value));
   }
-  options('rarity', cards.flatMap(card => [card.rarity, ...(card.market ? [card.market.rarity] : [])]));
+  options('rarity', cards.flatMap(card => [card.rarity, ...(card.printings || []).map(printing => printing.rarity), ...(card.market ? [card.market.rarity] : [])]));
   options('classification', cards.flatMap(card => card.classifications || []));
   $('snapshot').textContent = `BAZA ${data.retrieved}`;
   $('total-count').textContent = $('all-badge').textContent = cards.length;
