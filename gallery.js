@@ -111,6 +111,23 @@
     for (const id of controls) { if (id === 'eddiable') $(id).checked = false; else $(id).value = id === 'sort' ? (view === 'limited' ? 'limited' : 'name') : ''; }
     render();
   }
+  function printingImage(card, printing) {
+    if (printing && card.market?.printing_id === printing.id && card.market.local_image) return card.market.local_image;
+    return printing?.source_image_url || card.local_image;
+  }
+  function printingLabel(printing) {
+    return `${printing.set?.name || 'Nieznany set'} · ${printing.collector_number || '—'} · ${printing.rarity || 'brak rzadkości'} · ${(printing.language || 'en').toUpperCase()}`;
+  }
+  function updateDetailPrinting(card, printingId) {
+    const printing = card.printings.find(item => item.id === printingId) || card.printings[0];
+    const image = $('detail-image');
+    if (!printing || !image) return;
+    image.src = printingImage(card, printing);
+    image.alt = `${card.display_name} — ${printing.rarity} ${printing.collector_number}`;
+    image.onerror = () => { image.onerror = null; image.src = card.local_image; };
+    $('detail-printing-caption').textContent = `Wybrane wydanie: ${printingLabel(printing)}`;
+    $('detail-printing-source').innerHTML = printing.source_image_url ? external(printing.source_image_url, 'Otwórz grafikę źródłową ↗') : '';
+  }
   function showDetails(card, opener) {
     if (!card) return;
     if (!$('details').open) returnFocus = opener || document.activeElement;
@@ -119,8 +136,10 @@
     const featured = marketPrinting(card);
     const synergies = data.limited.synergies.filter(pair => pair.cards.includes(card.slug));
     const legal = card.legalities?.standard === 'legal' ? 'Legalna' : card.legalities?.standard === 'not-legal' ? 'Niedozwolona' : 'Brak informacji';
-    const detailImage = card.market?.local_image || featured?.source_image_url || card.local_image;
-    $('detail-body').innerHTML = `<div class="detail-layout"><div class="detail-art"><img width="500" height="700" src="${escape(detailImage)}" onerror="this.onerror=null;this.src='${escape(card.local_image)}'" alt="${escape(card.display_name)}${featured ? ` — ${escape(featured.rarity)} ${escape(featured.collector_number)}` : ''}"><small>${featured ? `Grafika wybranego wariantu: ${escape(featured.set.name)} · ${escape(featured.collector_number)} (z lokalnym fallbackiem)` : `Grafika: ${escape(card.set?.name)} · ${escape(card.print_number)}`}</small>${wishButton(card)}</div><div class="detail-copy">
+    const selectedPrinting = featured || card.printings.find(printing => printing.id === card.selected_printing_id) || card.printings[0];
+    const detailImage = printingImage(card, selectedPrinting);
+    const printingSelector = card.printings.length > 1 ? `<label class="printing-picker">Wyświetlane wydanie<select id="detail-printing">${card.printings.map(printing => `<option value="${escape(printing.id)}"${printing.id === selectedPrinting?.id ? ' selected' : ''}>${escape(printingLabel(printing))}</option>`).join('')}</select></label>` : '';
+    $('detail-body').innerHTML = `<div class="detail-layout"><div class="detail-art">${printingSelector}<img id="detail-image" width="500" height="700" src="${escape(detailImage)}" onerror="this.onerror=null;this.src='${escape(card.local_image)}'" alt="${escape(card.display_name)}${selectedPrinting ? ` — ${escape(selectedPrinting.rarity)} ${escape(selectedPrinting.collector_number)}` : ''}"><small id="detail-printing-caption">Wybrane wydanie: ${selectedPrinting ? escape(printingLabel(selectedPrinting)) : `Grafika: ${escape(card.set?.name)} · ${escape(card.print_number)}`}</small><small id="detail-printing-source"></small>${wishButton(card)}</div><div class="detail-copy">
       <p class="eyebrow">${escape(card.color)} / ${escape(card.card_type)}</p><h2 id="detail-title">${escape(card.display_name)}</h2><p class="muted">${escape((card.classifications || []).join(' · ') || 'Brak klasyfikacji')} · ${card.is_eddiable ? 'Sprzedawalna (Eddies)' : 'Niesprzedawalna (Eddies)'}</p>${stats(card)}${badges(card)}
       <h3>Zdolności</h3><p class="rules" lang="en">${escape(card.official_rules_text_en || card.rules_text || 'Brak tekstu zasad w zapisanej bazie.')}</p>
       <p class="source-note">Standard: ${legal} · stan danych ${escape(data.retrieved)}. To nie jest potwierdzenie dostępności w sealed.</p>
@@ -131,6 +150,8 @@
       <h3>Wydania (${card.printings.length})</h3><details><summary>Pokaż wszystkie wydania i warianty</summary><div class="printing-list">${card.printings.map(p => `<div class="printing"><strong>${escape(p.set?.name)} · ${escape(p.collector_number)}</strong>${escape(p.rarity)} · ${escape(p.language?.toUpperCase() || 'Brak języka')} · ${escape(p.artist || 'Brak autora')}<br>${external(p.source_image_url,'Grafika wydania (internet)')}</div>`).join('')}</div></details>
       <h3>Rulingi</h3><p>${card.rulings.length ? escape(JSON.stringify(card.rulings)) : 'Brak rulingów w zapisanej bazie. Nie oznacza to, że karta nie ma dodatkowych wyjaśnień.'}</p><p>${external(card.source_page,'Karta w bazie źródłowej')}</p><p class="source-note">ID: ${escape(card.id)}</p></div></div>`;
     if (!$('details').open) $('details').showModal();
+    if (card.printings.length > 1) $('detail-printing').addEventListener('change', event => updateDetailPrinting(card, event.target.value));
+    updateDetailPrinting(card, selectedPrinting?.id);
     $('details').scrollTop = 0;
     $('close-dialog').focus();
     syncHash();
